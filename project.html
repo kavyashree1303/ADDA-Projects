@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Final Project - Profile Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+    }
+    label {
+      margin-top: 10px;
+      display: block;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .output {
+      background-color: #e6ffe6;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 15px;
+    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Profile Form</h2>
+    <form id="profileForm">
+      <label for="name">Full Name *</label>
+      <input type="text" id="name" name="name" required minlength="3">
+
+      <label for="email">Email *</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="gender">Gender *</label>
+      <select id="gender" name="gender" required>
+        <option value="">Select gender</option>
+        <option>Male</option>
+        <option>Female</option>
+        <option>Other</option>
+      </select>
+
+      <label for="dob">Date of Birth *</label>
+      <input type="date" id="dob" name="dob" required>
+
+      <label for="bio">Short Bio</label>
+      <input type="text" id="bio" name="bio">
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <div class="output" id="output" style="display: none;">
+      <h3>Stored Data:</h3>
+      <p><strong>Name:</strong> <span id="outName"></span></p>
+      <p><strong>Email:</strong> <span id="outEmail"></span></p>
+      <p><strong>Gender:</strong> <span id="outGender"></span></p>
+      <p><strong>DOB:</strong> <span id="outDob"></span></p>
+      <p><strong>Bio:</strong> <span id="outBio"></span></p>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('profileForm');
+    const outputBox = document.getElementById('output');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault(); 
+
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const gender = document.getElementById('gender').value;
+      const dob = document.getElementById('dob').value;
+      const bio = document.getElementById('bio').value;
+
+      const data = { name, email, gender, dob, bio };
+
+   
+      localStorage.setItem('userData', JSON.stringify(data));
+
+      try {
+        const res = await fetch('https://reqres.in/api/users', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        console.log('API Response:', result);
+      } catch (err) {
+        console.error('API Error:', err);
+      }
+
+  
+      document.getElementById('outName').textContent = name;
+      document.getElementById('outEmail').textContent = email;
+      document.getElementById('outGender').textContent = gender;
+      document.getElementById('outDob').textContent = dob;
+      document.getElementById('outBio').textContent = bio;
+      outputBox.style.display = 'block';
+    });
+
+  
+    window.onload = () => {
+      const saved = localStorage.getItem('userData');
+      if (saved) {
+        const data = JSON.parse(saved);
+        document.getElementById('outName').textContent = data.name;
+        document.getElementById('outEmail').textContent = data.email;
+        document.getElementById('outGender').textContent = data.gender;
+        document.getElementById('outDob').textContent = data.dob;
+        document.getElementById('outBio').textContent = data.bio;
+        outputBox.style.display = 'block';
+      }
+    };
+  </script>
+
+</body>
+</html>
