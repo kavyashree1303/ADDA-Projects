@@ -41,12 +41,14 @@
       display: block;
       margin: 0 auto 10px auto;
       border-radius: 5px;
-      background-color: #f0f0f0;
-      border: 1px solid #ccc;
+      background-color: #007BFF;
+      color: white;
+      font-weight: bold;
+      border: none;
       cursor: pointer;
     }
     button:hover {
-      background-color: #e0e0e0;
+      background-color: #0069d9;
     }
     .output {
       background-color: #e6ffe6;
@@ -115,10 +117,8 @@
 
       const data = { name, email, gender, dob, bio };
 
-      
       localStorage.setItem('userData', JSON.stringify(data));
 
-    
       try {
         const res = await fetch('https://reqres.in/api/users', {
           method: 'POST',
@@ -140,7 +140,6 @@
       document.getElementById('outBio').textContent = bio;
       outputBox.style.display = 'block';
     });
-
 
     window.onload = () => {
       const saved = localStorage.getItem('userData');
